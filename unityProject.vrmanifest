@@ -2,12 +2,13 @@
   "source": "Unity",
   "applications": [
     {
-      "app_key": "application.generated.unity.introductiontohtcvivefinal.exe",
+      "app_key": "application.generated.unity.temp_project.exe",
       "launch_type": "url",
       "url": "steam://launch/",
+      "action_manifest_path": "G:\\Seoul_Hoseo_Lecture\\3_1\\Temp_Project\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
-          "name": "VR [Testing]"
+          "name": "Temp_Project [Testing]"
         }
       }
     }
