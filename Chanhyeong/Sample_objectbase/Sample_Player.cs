@@ -25,6 +25,9 @@ public class Sample_Player : MonoBehaviour {
         }
     }
 
+    // 오브젝트가 겹쳐있을때 체크하는 방식을 고민해야하고
+    // 니어가 뭔지 체크하는게 중요한게 아니라 가까운 위치에 존재하는 오브젝트의 개체 자체를 체크해야함
+    // 그래야 해당 개체의 펑션에 접근할 수 있겠지?
     private void OnTriggerEnter(Collider other) {
         near = other.GetComponent<Sample_Interction>().lifeKind;
     }
