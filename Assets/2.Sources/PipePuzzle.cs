@@ -8,9 +8,8 @@ public class PipePuzzle : MonoBehaviour
         Up, Down, Right, Left
     }
 
-    public PipePuzzleNode startNode;
-
     public bool isClear;
+    public PipePuzzleNode startNode;
 
     [SerializeField]
     LayerMask whatIsNode;
@@ -28,18 +27,18 @@ public class PipePuzzle : MonoBehaviour
             }
         }
 
-        if (currentNode){
+        if (!isClear && currentNode){
             if (Input.GetKeyDown(KeyCode.W)){
-                StartCoroutine(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Up));
+                StartCoroutine(WaitNodeRotate(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Up)));
             }
             if (Input.GetKeyDown(KeyCode.A)){
-                StartCoroutine(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Left));
+                StartCoroutine(WaitNodeRotate(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Left)));
             }
             if (Input.GetKeyDown(KeyCode.S)){
-                StartCoroutine(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Down));
+                StartCoroutine(WaitNodeRotate(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Down)));
             }
             if (Input.GetKeyDown(KeyCode.D)){
-                StartCoroutine(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Right));
+                StartCoroutine(WaitNodeRotate(currentNode.SmoothRotateAndCheck(hit.normal, Rotate.Right)));
             }
         }
 
@@ -48,7 +47,32 @@ public class PipePuzzle : MonoBehaviour
         }
     }
 
+    IEnumerator WaitNodeRotate(IEnumerator rotateRoutine){
+        yield return StartCoroutine(rotateRoutine);
+
+        CheckPuzzleClear();
+    }
+
     void CheckPuzzleClear(){
-        
+        Queue<PipePuzzleNode> queue = new Queue<PipePuzzleNode>();
+        List<PipePuzzleNode> visit = new List<PipePuzzleNode>();
+        queue.Enqueue(startNode);
+
+        while(queue.Count != 0){
+            PipePuzzleNode node = queue.Dequeue();
+
+            if (PipePuzzleNode.Type.End == node.type){
+                isClear = true;
+                break;
+            }
+
+            if (!visit.Contains(node)){
+                visit.Add(node);
+
+                for (int i = 0; i < node.nearNodes.Count; i++){
+                    queue.Enqueue(node.nearNodes[i]);
+                }
+            }
+        }
     }
 }

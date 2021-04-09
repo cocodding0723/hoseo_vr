@@ -9,10 +9,16 @@ public class PipePuzzleNode : MonoBehaviour {
         public Vector3 direction;
     }
 
+    public enum Type{
+        Start, Normal, End
+    }
+
+    public Type type;
+
     public List<RayInfo> rayInfos = new List<RayInfo>();
 
-    [HideInInspector]
-    public List<PipePuzzleNode> nodes = new List<PipePuzzleNode>();
+    // [HideInInspector]
+    public List<PipePuzzleNode> nearNodes = new List<PipePuzzleNode>();
 
     [SerializeField]
     private float rayDistance = 0.15f;
@@ -23,14 +29,18 @@ public class PipePuzzleNode : MonoBehaviour {
 
     private void Start() {
         myTransform = transform;
-        whatIsNode = gameObject.layer;
+        whatIsNode = 1 << gameObject.layer;
 
+        CheckNearNodes();
+    }
+
+    private void Update() {
         CheckNearNodes();
     }
 
     private void OnDestroy() {
         myTransform = null;
-        nodes = null;
+        nearNodes = null;
         rayInfos = null;
     }
 
@@ -43,16 +53,17 @@ public class PipePuzzleNode : MonoBehaviour {
 
             rayStartPoint = myTransform.position + rayStartPoint;
 
-            if (Physics.Raycast(rayInfos[i].startPoint, rayInfos[i].direction, out hit, rayDistance, whatIsNode)){
+            if (Physics.Raycast(rayStartPoint, rayDirection, out hit, rayDistance, whatIsNode)){
                 PipePuzzleNode near = hit.transform.GetComponent<PipePuzzleNode>();
                 if (near){
-                    nodes.Add(near);
+                    if (!nearNodes.Contains(near)) nearNodes.Add(near);
                 }
             }
         }
     }
 
     public IEnumerator SmoothRotateAndCheck(Vector3 normal, PipePuzzle.Rotate rotate){
+        nearNodes.Clear();
         bool flag = isRotate;
 
         Vector3 cross = Vector3.zero;
