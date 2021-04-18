@@ -167,8 +167,6 @@ public class Monster : MonoBehaviour
     }
     public void CheckAttack()
     {
-        Debug.Log("CheckAttack");
-        Debug.Log(isFind);
         if (isFind == true)
         {
             if (Vector3.Distance(playerTr.position, skulTr.position) > 5f)

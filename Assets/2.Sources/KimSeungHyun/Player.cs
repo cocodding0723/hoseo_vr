@@ -20,9 +20,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
-        player.transform.position = (new Vector3(player.transform.position.x + h, player.transform.position.y, player.transform.position.z + v));
+        //h = Input.GetAxis("Horizontal");
+        //v = Input.GetAxis("Vertical");
+        //player.transform.position = (new Vector3(player.transform.position.x + h, player.transform.position.y, player.transform.position.z + v));
     }
     void OnTriggerEnter(Collider col)
     {
@@ -35,4 +35,14 @@ public class Player : MonoBehaviour
         playerHp -= damage;
         print("Hit!!");
     }
+
+    //void TakeGunMag()
+    //{
+    //    if (Vector3.Distance(HDMTr.position, leftHand.position) < takeGunMagDis)
+    //    {
+    //        Instantiate(GunMag, leftHand.position, leftHand.rotation);
+    //        GunMag.GetComponent<GunMag>().isGrap = true;
+    //        GunMag.GetComponent<GunMag>().gunMagRigid.useGravity = false;
+    //    }
+    //}
 }

@@ -11,9 +11,18 @@ public class GunRay : MonoBehaviour
     GameObject shotEffect;
     [SerializeField]
     Transform effectTr;
+    [SerializeField]
+    Transform HDMTr;
+    [SerializeField]
+    Transform leftHand;
+    [SerializeField]
+    float takeGunMagDis = 10f;
+    [SerializeField]
+    GameObject gunMagPrefab;
     GameObject GrapGunMagObject;
     GameObject useGunMagObject;
-    GameObject gunMag;
+    GameObject firstGunMag;
+    
     GunMag isGunMag;
     GunMag useGunMag;
     Transform gunReloadPivot;
@@ -40,7 +49,7 @@ public class GunRay : MonoBehaviour
         gun = Gun.able;
         cameraQt = Quaternion.Euler(0, 10f, 0);
         layerMaskBPivot = 1 << LayerMask.NameToLayer("BPivot");
-        gunMag = transform.Find("GunMag").gameObject;
+        firstGunMag = transform.Find("GunMag").gameObject;
         camTr = Camera.main.transform;
         gunReloadPivot = transform.Find("GunReloadPivot");
         gunMagPivot = transform.Find("GunMagPivot");
@@ -54,6 +63,7 @@ public class GunRay : MonoBehaviour
         CheckScope();
         DisGunMag();
         ReLoad();
+        TakeGunMag();
         Debug.DrawLine(camTr.position, FPivot.transform.position, Color.blue);
         if(shotHit.point !=null)
         Debug.DrawLine(camTr.position, shotHit.point - camTr.position);
@@ -74,8 +84,10 @@ public class GunRay : MonoBehaviour
         {
             OnClickObject();
         }
+        if (GrapGunMagObject != null)
+            Debug.Log(Vector3.Distance(gunReloadPivot.position, GrapGunMagObject.transform.position));
         //Debug.Log(useGunMag.gunMagCount);
-            
+
     }
     void CheckScope()
     {
@@ -133,7 +145,7 @@ public class GunRay : MonoBehaviour
         if (gun == Gun.Reload && GrapGunMagObject != null)
         {
             Debug.Log("Reload대기");
-            if(Vector3.Distance(GrapGunMagObject.transform.position,gunReloadPivot.transform.position) < 10.0f)
+            if(Vector3.Distance(GrapGunMagObject.transform.position,gunReloadPivot.transform.position) < 3.0f)
             {
                 Debug.Log("Reload가능");
                 isGunMag.gunMagRigid.velocity = Vector3.zero;
@@ -211,9 +223,7 @@ public class GunRay : MonoBehaviour
     }
     void CulGunAngle()
     {
-        //angle1 = Vector3.Angle(FPivot.transform.position - Camera.main.transform.position, FPivot.transform.position - BPivot.transform.position);
         angle1 = Vector3.Angle(BPivot.transform.position - camTr.forward * 100f, BPivot.transform.position - FPivot.transform.position);
-        //Debug.Log(angle1);
         angle2 = 90 - angle1;
     }
 
@@ -230,5 +240,25 @@ public class GunRay : MonoBehaviour
             FindParant(pObject);
         }
         else if (pObject.transform.parent == null) { }        
+    }
+
+    void TakeGunMag()
+    {
+        Debug.Log(Vector3.Distance(HDMTr.position, leftHand.position));
+        if(Input.GetKeyDown(KeyCode.Q) && GrapGunMagObject == null)
+            if (Vector3.Distance(HDMTr.position, leftHand.position) < takeGunMagDis)
+            {
+                GrapGunMagObject = Instantiate(gunMagPrefab, leftHand.position, leftHand.rotation);
+                isGunMag = GrapGunMagObject.GetComponent<GunMag>();
+                isGunMag.gunMagRigid.useGravity = false;
+                isGunMag.isConnect = false;
+                isGunMag.isGrap = true;
+            }
+        if(GrapGunMagObject != null)
+            if (isGunMag.isConnect == false)
+            {
+                GrapGunMagObject.transform.position = leftHand.transform.position;
+                GrapGunMagObject.transform.rotation = leftHand.transform.rotation;
+            }
     }
 }

@@ -10,7 +10,7 @@ public class GunMag : MonoBehaviour
     public bool isGrap;
     public Rigidbody gunMagRigid;
     
-    void Start()
+    void Awake()
     {
         isGrap = false;
         gunMagRigid = GetComponent<Rigidbody>();
@@ -20,7 +20,7 @@ public class GunMag : MonoBehaviour
             gunMagRigid.isKinematic = false;
             gunMagRigid.useGravity = true;
         }
-        //else if (isConnect == true)
+        else if (isConnect == true)
             gunMagRigid.isKinematic = true;
         if (isGrap == true)
             gunMagRigid.useGravity = false;
@@ -31,5 +31,10 @@ public class GunMag : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void GrapObject()
+    {
+
     }
 }
